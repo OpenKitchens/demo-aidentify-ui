@@ -1,7 +1,7 @@
 <script setup>
 import Topbar from "@/components/resulttopbar.vue"
 import EndAction from "@/components/endaction.vue"
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 
 import { useIndexImageStore } from '@/stores/indexImage.js'
 import { useCoordinateStore } from '@/stores/coordinate.js'
@@ -16,6 +16,25 @@ const imageUrlbefore = ref(`/images/before/${IndexImage.data}.jpg`)
 coordinate.data.point1.xPos
 
 console.log("hello")
+
+const uploadedImage = ref(null) // refで画像要素を参照
+
+
+// 画像の幅と高さを取得する関数
+const getImageDimensions = () => {
+  if (uploadedImage.value) {
+    const width = uploadedImage.value.clientWidth
+    const height = uploadedImage.value.clientHeight
+
+    return {width: width,height: height}
+  }
+}
+
+const image = ref()
+// 画像が表示されたら（DOMにマウントされたら）幅と高さを取得
+onMounted(() => {
+  image.value = getImageDimensions()
+})
 </script>
 
 <template>
@@ -35,11 +54,11 @@ console.log("hello")
             class="w-[100vw]">
         </div>-->
 
-        <img :src="imageUrl" alt="アップロードされた画像" class="w-[100vw]" id="picture">
-        <div :style="{'top': coordinate.data.point1.yPos + 'px', 'left': coordinate.data.point1.xPos + 'px', 'position': 'absolute','width': Math.abs(coordinate.data.point1.xPos - coordinate.data.point2.xPos)+'px', 'height': Math.abs(coordinate.data.point1.yPos - coordinate.data.point2.yPos)+'px' }">
-          <img :src="imageUrlbefore" :style="{'-webkit-clip-path': 'inset('+coordinate.data.point1.yPos+' '+Number(document.getElementById('picture').width - coordinate.data.point2.xPos)+' '+Number(document.getElementById('picture').height - coordinate.data.point2.yPos)+' '+coordinate.data.point1.xPos+')', 'clip-path': 'inset(20px 60px)+'}">
-          <!--上右下左-->
-        </div>
+        <img :src="imageUrl" alt="アップロードされた画像" class="w-[100vw]" id="picture" ref="uploadedImage">
+        <!--<div :style="{'top': coordinate.data.point1.yPos + 'px', 'left': coordinate.data.point1.xPos + 'px', 'position': 'absolute','width': Math.abs(coordinate.data.point1.xPos - coordinate.data.point2.xPos)+'px', 'height': Math.abs(coordinate.data.point1.yPos - coordinate.data.point2.yPos)+'px' }">
+          <img :src="imageUrlbefore" :style="{'-webkit-clip-path': 'inset('+coordinate.data.point1.yPos+' '+Number(image.data.width - coordinate.data.point2.xPos)+' '+Number(image.data.height - coordinate.data.point2.yPos)+' '+coordinate.data.point1.xPos+')', 'clip-path': 'inset(20px 60px)+'}">
+          上右下左
+        </div>-->
       </div>
     </div>
 
