@@ -21,9 +21,11 @@ console.log(store.viewpinia)
 const router = useRouter()
 
 const uploadImage = () => {
-  //store.router("loading")
+  store.router("loading")
   
-  router.push('result')
+  window.setTimeout(() => {
+    router.push('result')
+  }, 5000);
 }
 </script>
 <template>
